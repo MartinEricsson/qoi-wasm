@@ -1,0 +1,21 @@
+{
+  "name": "qoi-wasm",
+  "version": "1.0.0",
+  "description": "A QOI decoder written in WebAssembly",
+  "main": "./src/qoi-wasm/qoi.wasm",
+  "scripts": {
+    "compile": "node src/qoi-wasm/index.js",
+    "kombine": "node src/kombine/index.js",
+    "serve": "node serve.mjs"
+  },
+  "keywords": [
+    "WASM",
+    "QOI"
+  ],
+  "author": "Martin Ericsson",
+  "license": "none",
+  "dependencies": {
+    "brotli": "1.3.2",
+    "wabt": "1.0.25"
+  }
+}

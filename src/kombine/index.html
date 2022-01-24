@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QOI WASM</title>
+    <style>
+      body {
+        background-color: gray;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <script type="module">
+      WebAssembly.instantiateStreaming(
+        fetch("/assets/peerfer_frame_rgba.wasm"),
+        {}
+      ).then((obj) => {
+        const { d, m } = obj.instance.exports;
+        const [width, height, channels] = d();
+        console.log(width, height, channels);
+
+        const [canvas] = document.getElementsByTagName("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        if (channels === 4) {
+          const imageData = new ImageData(
+            new Uint8ClampedArray(
+              m.buffer,
+              0,
+              canvas.width * canvas.height * 4
+            ),
+            canvas.width,
+            canvas.height
+          );
+          ctx.putImageData(imageData, 0, 0);
+        } else {
+          const rgbData = new Uint8ClampedArray(
+            m.buffer,
+            0,
+            canvas.width * canvas.height * 3
+          );
+          let rgbaData = new Uint8ClampedArray(
+            canvas.width * canvas.height * 4
+          );
+
+          for (let i = 0; i < canvas.width * canvas.height; i++) {
+            rgbaData[i * 4] = rgbData[i * 3];
+            rgbaData[i * 4 + 1] = rgbData[i * 3 + 1];
+            rgbaData[i * 4 + 2] = rgbData[i * 3 + 2];
+            rgbaData[i * 4 + 3] = 255;
+          }
+          const imageData = new ImageData(
+            rgbaData,
+            canvas.width,
+            canvas.height
+          );
+          ctx.putImageData(imageData, 0, 0);
+        }
+      });
+    </script>
+  </body>
+</html>

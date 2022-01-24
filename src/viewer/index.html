@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QOI Viewer</title>
+    <style>
+      body {
+        background-color: gray;
+        display: flex;
+        flex-direction: column;
+        font-family: "Lucida Console", "Courier New", monospace;
+      }
+      .toolbar {
+        display: flex;
+      }
+
+      .toolbar button {
+        margin: 4px;
+      }
+
+      .toolbar button:first-child {
+        margin-left: 0;
+      }
+
+      #headervalues {
+        margin: 4px;
+        padding: 4px;
+        background-color: rgba(250, 250, 250, 0.5);
+        min-width: 80px;
+        text-align: center;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button>Open</button>
+      <button disabled="true">Toggle alpha</button>
+      <span id="headervalues">Img data</span>
+    </div>
+    <canvas></canvas>
+    <script type="module">
+      const [openButton, alphaButton] = document.getElementsByTagName("button");
+      const [canvas] = document.getElementsByTagName("canvas");
+      const headerEl = document.getElementById("headervalues");
+      const ctx = canvas.getContext("2d");
+      let showAlpha = false;
+      let alphaImage = null;
+      let rgbaImage = null;
+      let memory = null;
+      let memOffset = 0;
+
+      openButton.addEventListener("click", async () => {
+        try {
+          let [fileHandle] = await window.showOpenFilePicker();
+          const file = await fileHandle.getFile();
+          let contents = await file.arrayBuffer();
+
+          const view = new Uint8Array(contents);
+          const pages = Math.ceil(view.length / 2 ** 16);
+
+          memory = new WebAssembly.Memory({ initial: pages });
+          let importObject = {
+            m: { m: memory },
+          };
+
+          let mem8view = new Uint8Array(memory.buffer);
+          mem8view.set(view);
+
+          try {
+            const obj = await WebAssembly.instantiateStreaming(
+              fetch("/src/qoi-wasm/qoi.wasm"),
+              importObject
+            );
+            const header = obj.instance.exports.decode();
+            const [width, height, channels, colorspace, memoryOffset] = header;
+            memOffset = memoryOffset;
+
+            if (width > 0) {
+              canvas.width = width;
+              canvas.height = height;
+              canvas.style.width = `${width}px`;
+
+              headerEl.innerText = `${width}x${height}x${channels}`;
+
+              if (channels === 4) {
+                alphaImage = null;
+                rgbaImage = null;
+
+                const imageData = new ImageData(
+                  new Uint8ClampedArray(
+                    memory.buffer,
+                    memoryOffset,
+                    canvas.width * canvas.height * 4
+                  ),
+                  canvas.width,
+                  canvas.height
+                );
+
+                ctx.putImageData(imageData, 0, 0);
+
+                rgbaImage = new Image();
+                rgbaImage.src = canvas.toDataURL();
+
+                alphaButton.disabled = false;
+              } else {
+                alphaButton.disabled = true;
+
+                const rgbData = new Uint8ClampedArray(
+                  memory.buffer,
+                  memoryOffset,
+                  canvas.width * canvas.height * 3
+                );
+                let rgbaData = new Uint8ClampedArray(
+                  canvas.width * canvas.height * 4
+                );
+
+                for (let i = 0; i < canvas.width * canvas.height; i++) {
+                  rgbaData[i * 4] = rgbData[i * 3];
+                  rgbaData[i * 4 + 1] = rgbData[i * 3 + 1];
+                  rgbaData[i * 4 + 2] = rgbData[i * 3 + 2];
+                  rgbaData[i * 4 + 3] = 255;
+                }
+                const imageData = new ImageData(
+                  rgbaData,
+                  canvas.width,
+                  canvas.height
+                );
+                ctx.putImageData(imageData, 0, 0);
+              }
+            } else {
+              alert(`Failed to decode ${fileHandle.name}`);
+            }
+          } catch (e) {
+            alert("Something went wrong", e);
+          }
+        } catch (e) {
+          console.warn("User aborted the file dialog");
+        }
+      });
+
+      alphaButton.addEventListener("click", (_) => {
+        showAlpha = !showAlpha;
+
+        if (showAlpha) {
+          if (alphaImage != null) {
+            ctx.drawImage(alphaImage, 0, 0);
+          } else {
+            const alphaData = new Uint8ClampedArray(
+              memory.buffer,
+              memOffset,
+              canvas.width * canvas.height * 4
+            );
+            for (let i = 0; i < canvas.width * canvas.height; i++) {
+              alphaData[i * 4] = alphaData[i * 4 + 3];
+              alphaData[i * 4 + 1] = alphaData[i * 4 + 3];
+              alphaData[i * 4 + 2] = alphaData[i * 4 + 3];
+              alphaData[i * 4 + 3] = 255;
+            }
+            const alphaImageData = new ImageData(
+              alphaData,
+              canvas.width,
+              canvas.height
+            );
+
+            ctx.putImageData(alphaImageData, 0, 0);
+
+            alphaImage = new Image();
+            alphaImage.src = canvas.toDataURL();
+          }
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(rgbaImage, 0, 0);
+        }
+      });
+    </script>
+  </body>
+</html>
