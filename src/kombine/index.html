@@ -17,7 +17,7 @@
     <canvas></canvas>
     <script type="module">
       WebAssembly.instantiateStreaming(
-        fetch("/assets/peerfer_frame_rgba.wasm"),
+        fetch("../../assets/peerfer_frame_rgba.wasm"),
         {}
       ).then((obj) => {
         const { d, m } = obj.instance.exports;

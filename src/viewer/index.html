@@ -71,7 +71,7 @@
 
           try {
             const obj = await WebAssembly.instantiateStreaming(
-              fetch("/src/qoi-wasm/qoi.wasm"),
+              fetch("../qoi-wasm/qoi.wasm"),
               importObject
             );
             const header = obj.instance.exports.decode();
