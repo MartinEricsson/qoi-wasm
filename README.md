@@ -1,10 +1,10 @@
 # QOI WASM
 
-A (QOI) [https://qoiformat.org] decoder written in the WebAssembly Text Format (WAT)
+A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT)
 
 ## WAT
 
-An implemention of the QOI decoder. This implementation is dependent on that the host can handle _Multi-Value Wasm_. Included is a compiled WAT to WASM file that can be instantiated to decode images.
+An implemention of the QOI decoder. This implementation is dependent on that the host can handle _Multi-Value Wasm_. Included is a compiled WAT to WASM file that can be instantiated to decode images. Demo is deployed [here](https://martinericsson.github.io/qoi-wasm/). _(Note the requirements for the browser noted below.)_
 
 ### Usage
 
