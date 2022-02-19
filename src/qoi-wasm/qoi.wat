@@ -21,7 +21,6 @@
     (local $width i32) 
     (local $height i32) 
     (local $channels i32) 
-    (local $colorspace i32)
     (local $run i32)
     (local $current i32)
     (local $luma i32)
@@ -79,11 +78,6 @@
     i32.const 12
     i32.load8_u
     set_local $channels
-
-    ;; parse colorspace
-    i32.const 13
-    i32.load8_u
-    set_local $colorspace
 
     ;; calculate size
     get_local $width
@@ -333,22 +327,19 @@
     get_local $pagesOffset
     get_local $loop_counter
     i32.add
+    tee_local $current
     ;; value
     get_local $r
     ;; store
     i32.store8
 
-    get_local $pagesOffset
-    get_local $loop_counter
-    i32.add
+    get_local $current
     i32.const 1
     i32.add
     get_local $g
     i32.store8
 
-    get_local $pagesOffset
-    get_local $loop_counter
-    i32.add
+    get_local $current
     i32.const 2
     i32.add
     get_local $b
@@ -359,9 +350,7 @@
     i32.eq
     if
     ;; alpha
-    get_local $pagesOffset
-    get_local $loop_counter
-    i32.add
+    get_local $current
     i32.const 3
     i32.add
     get_local $a
@@ -382,7 +371,9 @@
     get_local $width
     get_local $height
     get_local $channels
-    get_local $colorspace
+    ;; parse colorspace
+    i32.const 13
+    i32.load8_u
     get_local $pagesOffset
   )
   (export "decode" (func $decode))

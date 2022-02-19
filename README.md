@@ -1,6 +1,6 @@
 # QOI WASM
 
-A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT)
+A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT). Current size of the library is _619_ bytes.
 
 ## WAT
 
@@ -72,7 +72,16 @@ Some example results. (sizes in bytes)
 File                    PNG         QOI         QOI-WASM    QOI-WASM-BROTLI
 pixil-frame-o           124         104         574         312
 peerfeer_frame_rgba     1684359     1747735     1748220     1019745
+dice                    349827      519653      520137      318134
+kodim10                 593463      652383      652867      499685
+kodim23                 557596      675251      675735      513703
+qoi_logo                16605       16488       16968       7977
+testcard_rgba           14227       24167       24647       9135
+testcard                18371       21857       22337       7306
+wikipedia_008           1344960     1521134     1521618     1226036
 ```
+
+First two images are included in this repository, the rest comes from the official QOI page.
 
 ## Dependencies
 
