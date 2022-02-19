@@ -1,5 +1,14 @@
 (module
   (import "m" "m" (memory 1))
+  (global $qi (mut i32) (i32.const 14))
+  (func $getAndInc (result i32)
+    get_global $qi
+    i32.load8_u
+    get_global $qi
+    i32.const 1
+    i32.add
+    set_global $qi
+  )
   (func $decode (result i32 i32 i32 i32 i32)
     (local $r i32)
     (local $g i32)
@@ -8,7 +17,6 @@
     (local $pagesOffset i32)
     (local $pixelsLength i32)
     (local $loop_counter i32)
-    (local $qoi_index i32)
     (local $index_offset i32)
     (local $width i32) 
     (local $height i32) 
@@ -100,10 +108,6 @@
     i32.add
     set_local $pagesOffset
 
-    ;; qoi header size
-    i32.const 14
-    set_local $qoi_index
-
     ;; init locals
     i32.const 255
     set_local $a
@@ -122,53 +126,31 @@
     set_local $run
     else
 
-    get_local $qoi_index
-    i32.load8_u
+    call $getAndInc
     tee_local $current
-    get_local $qoi_index
-    i32.const 1
-    i32.add
-    set_local $qoi_index
     
     ;; RGB,A
     i32.const 254
     i32.ge_u
     if
         ;; r == data++
-        get_local $qoi_index
-        i32.load8_u
+        call $getAndInc
         set_local $r
-        get_local $qoi_index
-        i32.const 1
-        i32.add
-        tee_local $qoi_index
         ;; g == data++
-        i32.load8_u
+        call $getAndInc
         set_local $g
-        get_local $qoi_index
-        i32.const 1
-        i32.add
-        tee_local $qoi_index
         ;; b == data++
-        i32.load8_u
+        call $getAndInc
         set_local $b
-        get_local $qoi_index
-        i32.const 1
-        i32.add
-        set_local $qoi_index
+
 
         ;; alpha
         i32.const 255
         get_local $current
         i32.eq
         if
-            get_local $qoi_index
-            i32.load8_u
+            call $getAndInc
             set_local $a
-            get_local $qoi_index
-            i32.const 1
-            i32.add
-            set_local $qoi_index
         end
     else
         ;; RUN
@@ -265,13 +247,8 @@
                 else
                     ;; LUMA
                     get_local $current
-                    get_local $qoi_index
-                    i32.load8_u
+                    call $getAndInc
                     set_local $current
-                    get_local $qoi_index
-                    i32.const 1
-                    i32.add
-                    set_local $qoi_index
 
                     i32.const 63
                     i32.and

@@ -70,12 +70,12 @@ Some example results. (sizes in bytes)
 
 
 File                    PNG         QOI         QOI-WASM    QOI-WASM-BROTLI
-pixil-frame-o           124         104         640         316
-peerfeer_frame_rgba     1684359     1747735     1748247     1019361
+pixil-frame-o           124         104         574         312
+peerfeer_frame_rgba     1684359     1747735     1748220     1019745
 ```
 
 ## Dependencies
 
-(The WebAssembly Binary Toolkit) [https://www.npmjs.com/package/wabt] for compiling the WAT files to WASM.
+[The WebAssembly Binary Toolkit](https://www.npmjs.com/package/wabt) for compiling the WAT files to WASM.
 
-(brotli) [https://www.npmjs.com/package/brotli] for compressing the inlined decompression module.
+[Brotli](https://www.npmjs.com/package/brotli) for compressing the inlined decompression module.

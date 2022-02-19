@@ -8,6 +8,15 @@ const compile = ({
   colorChannels,
 }) => `(module
     (memory (export "m") ${blocks})
+    (global $qi (mut i32) (i32.const ${decompSize}))
+    (func $getAndInc (result i32)
+        get_global $qi
+        i32.load8_u
+        get_global $qi
+        i32.const 1
+        i32.add
+        set_global $qi
+    )
     ${dataBlock}
     (func $d (result i32 i32 i32)
       (local $r i32)
@@ -16,7 +25,6 @@ const compile = ({
       (local $a i32)
       (local $pixelsLength i32)
       (local $loop_counter i32) 
-      (local $qoi_index i32)
       (local $index_offset i32)
       (local $run i32)
       (local $b1 i32)
@@ -25,8 +33,7 @@ const compile = ({
       (local $pixelIndex i32)
   
       i32.const ${decompSize}
-      tee_local $pixelsLength
-      set_local $qoi_index
+      set_local $pixelsLength
       
       i32.const ${decompSize + qoiSize}
       set_local $index_offset
@@ -48,53 +55,30 @@ const compile = ({
       else
   
       ;; b1 = p[i++]
-      local.get $qoi_index
-      i32.load8_u
+      call $getAndInc
       local.tee $b1
-      local.get $qoi_index
-      i32.const 1
-      i32.add
-      local.set $qoi_index
       
       ;; RGB
       i32.const 254
       i32.ge_u
       if
           ;; r == data++
-          local.get $qoi_index
-          i32.load8_u
+          call $getAndInc
           local.set $r
-          local.get $qoi_index
-          i32.const 1
-          i32.add
-          local.tee $qoi_index
           ;; g == data++
-          i32.load8_u
+          call $getAndInc
           local.set $g
-          local.get $qoi_index
-          i32.const 1
-          i32.add
-          local.tee $qoi_index
           ;; b == data++
-          i32.load8_u
+          call $getAndInc
           local.set $b
-          local.get $qoi_index
-          i32.const 1
-          i32.add
-          local.set $qoi_index
 
           ;; alpha
           i32.const 255
           local.get $b1
           i32.eq
           if
-            local.get $qoi_index
-            i32.load8_u
+            call $getAndInc
             local.set $a
-            local.get $qoi_index
-            i32.const 1
-            i32.add
-            local.set $qoi_index
           end
       else
               ;; RUN
@@ -192,13 +176,8 @@ const compile = ({
                       else
                           ;; LUMA
                           get_local $b1
-                          local.get $qoi_index
-                          i32.load8_u
+                          call $getAndInc
                           local.set $b1
-                          local.get $qoi_index
-                          i32.const 1
-                          i32.add
-                          local.set $qoi_index
   
                           i32.const 63
                           i32.and

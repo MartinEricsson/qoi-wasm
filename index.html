@@ -7,7 +7,7 @@
     <title>QOI WASM</title>
     <style>
       body {
-        background-color: blanchedalmond;
+        background-color: rgb(255, 235, 205);
         width: 100vw;
         height: 100vh;
         display: flex;
@@ -16,12 +16,66 @@
         flex-direction: column;
         color: #345;
         font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(
+          -35deg,
+          rgba(0, 0, 0, 0.22),
+          rgba(255, 235, 205, 0.25)
+        );
+      }
+
+      .container {
+        display: flex;
+        margin: 0 0 8px 0;
+      }
+
+      .container a {
+        min-width: 150px;
+        min-height: 150px;
+        align-items: center;
+        justify-content: center;
+        margin: 8px;
+
+        display: flex;
+        background: linear-gradient(
+          -45deg,
+          rgba(0, 0, 0, 0.22),
+          rgba(255, 255, 255, 0.25)
+        );
+        color: rgba(50, 50, 250, 0.75);
+        border-radius: 25px;
+      }
+
+      .container a.left {
+        box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+          5px 5px 12px 0 rgba(255, 0, 0, 0.15),
+          -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .container a.right {
+        box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+          5px 5px 12px 0 rgba(0, 255, 255, 0.15),
+          -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .src {
+        font-size: small;
+      }
+
+      h1 {
+        text-shadow: white 0 2px 5px;
       }
     </style>
   </head>
   <body>
     <h1>QOI WASM examples</h1>
-    <a href="/qoi-wasm/src/viewer/index.html">Image viewer</a>
-    <a href="/qoi-wasm/src/kombine/index.html">Data plus code example</a>
+    <div class="container">
+      <a class="left" href="/qoi-wasm/src/viewer/index.html">Image viewer</a>
+      <a class="right" href="/qoi-wasm/src/kombine/index.html"
+        >Inline decoder</a
+      >
+    </div>
+    <a class="src" href="https://github.com/MartinEricsson/qoi-wasm"
+      >Source code</a
+    >
   </body>
 </html>
