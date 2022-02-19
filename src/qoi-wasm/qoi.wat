@@ -9,6 +9,31 @@
     i32.add
     set_global $qi
   )
+  (func $bigEndianParse (param i32) (result i32)
+    get_local 0
+    i32.load8_u
+    i32.const 24
+    i32.shl
+    get_local 0
+    i32.const 1
+    i32.add
+    i32.load8_u
+    i32.const 16
+    i32.shl
+    get_local 0
+    i32.const 2
+    i32.add
+    i32.load8_u
+    i32.const 8
+    i32.shl
+    get_local 0
+    i32.const 3
+    i32.add
+    i32.load8_u
+    i32.or
+    i32.or
+    i32.or
+  )
   (func $decode (result i32 i32 i32 i32 i32)
     (local $r i32)
     (local $g i32)
@@ -36,53 +61,20 @@
     
     ;; parse width
     i32.const 4
-    i32.load8_u
-    i32.const 24
-    i32.shl
-    i32.const 5
-    i32.load8_u
-    i32.const 16
-    i32.shl
-    i32.const 6
-    i32.load8_u
-    i32.const 8
-    i32.shl
-    i32.const 7
-    i32.load8_u
-    i32.or
-    i32.or
-    i32.or
-    set_local $width
+    call $bigEndianParse
+    tee_local $width
 
     ;; parse height
     i32.const 8
-    i32.load8_u
-    i32.const 24
-    i32.shl
-    i32.const 9
-    i32.load8_u
-    i32.const 16
-    i32.shl
-    i32.const 10
-    i32.load8_u
-    i32.const 8
-    i32.shl
-    i32.const 11
-    i32.load8_u
-    i32.or
-    i32.or
-    i32.or
-    set_local $height
+    call $bigEndianParse
+    tee_local $height
 
     ;; parse channels
     i32.const 12
     i32.load8_u
-    set_local $channels
+    tee_local $channels
 
     ;; calculate size
-    get_local $width
-    get_local $height
-    get_local $channels
     i32.mul
     i32.mul
     tee_local $pixelsLength
@@ -136,7 +128,6 @@
         ;; b == data++
         call $getAndInc
         set_local $b
-
 
         ;; alpha
         i32.const 255
