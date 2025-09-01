@@ -1,11 +1,13 @@
 const fs = require("fs");
+const { spawnSync } = require("child_process");
 const wabt = require("wabt")();
 const path = require("path");
 
 const compress = require("./compress");
 const compile = require("./kömbi");
 
-const [, , qoiFilename] = process.argv;
+const [, , qoiFilename, ...restArgs] = process.argv;
+const doWasmOpt = restArgs.includes("--opt") || process.env.WASM_OPT === "1";
 const { name, dir } = path.parse(qoiFilename);
 const basePath = path.join(dir, name);
 
@@ -91,5 +93,34 @@ wabt.then((compiler) => {
 
   fs.writeFileSync(`${basePath}.wasm`, binaryBuffer);
   console.log("Uncompressed size: ", binaryBuffer.length);
+
+  // Optionally run wasm-opt for further size optimization
+  if (doWasmOpt) {
+    const outPath = `${basePath}.min.wasm`;
+    const cmd = process.platform === "win32" ? "npx.cmd" : "npx";
+    const args = [
+      "-y",
+      "wasm-opt",
+      "-Oz",
+      "--enable-multivalue",
+      "--strip-dwarf",
+      "--strip-producers",
+      "-o",
+      outPath,
+      `${basePath}.wasm`,
+    ];
+
+    const res = spawnSync(cmd, args, { stdio: "inherit" });
+    if (res.status === 0) {
+      const minBuffer = fs.readFileSync(outPath);
+      console.log("Optimized size: ", minBuffer.length);
+      compress(minBuffer, `${basePath}.wat.br`);
+      return;
+    } else {
+      console.warn("wasm-opt failed or not available; using unoptimized wasm.");
+    }
+  }
+
+  // Fallback: compress the original buffer
   compress(binaryBuffer, `${basePath}.wat.br`);
 });
