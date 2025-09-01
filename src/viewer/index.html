@@ -74,9 +74,21 @@
               fetch("../qoi-wasm/qoi.wasm"),
               importObject
             );
+            const decodeStart = performance.now();
             const header = obj.instance.exports.decode();
+            const decodeMs = performance.now() - decodeStart;
             const [width, height, channels, colorspace, memoryOffset] = header;
             memOffset = memoryOffset;
+
+            // Log decode timing and basic stats
+            const mpix = (width * height) / 1e6;
+            const mpixPerSec =
+              decodeMs > 0 ? (mpix / (decodeMs / 1000)).toFixed(2) : "∞";
+            console.log(
+              `Decoded ${fileHandle.name} (${width}x${height}x${channels}, ${
+                view.length
+              } bytes) in ${decodeMs.toFixed(2)} ms • ${mpixPerSec} MPix/s`
+            );
 
             if (width > 0) {
               canvas.width = width;

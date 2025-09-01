@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "node src/qoi-wasm/index.js",
     "kombine": "node src/kombine/index.js",
-    "serve": "node serve.mjs"
+    "serve": "node serve.mjs",
+    "build": "npm run compile && npx -y wasm-opt -Oz --enable-multivalue --strip-dwarf --strip-producers -o src/qoi-wasm/qoi.min.wasm src/qoi-wasm/qoi.wasm"
   },
   "keywords": [
     "WASM",
