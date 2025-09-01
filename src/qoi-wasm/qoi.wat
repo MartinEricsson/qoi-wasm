@@ -15,21 +15,15 @@
     i32.const 24
     i32.shl
     get_local 0
-    i32.const 1
-    i32.add
-    i32.load8_u
+    i32.load8_u offset=1
     i32.const 16
     i32.shl
     get_local 0
-    i32.const 2
-    i32.add
-    i32.load8_u
+    i32.load8_u offset=2
     i32.const 8
     i32.shl
     get_local 0
-    i32.const 3
-    i32.add
-    i32.load8_u
+    i32.load8_u offset=3
     i32.or
     i32.or
     i32.or
@@ -46,6 +40,7 @@
     (local $width i32) 
     (local $height i32) 
     (local $channels i32) 
+    (local $hasAlpha i32)
     (local $run i32)
     (local $current i32)
     (local $luma i32)
@@ -74,6 +69,12 @@
     i32.load8_u
     tee_local $channels
 
+    ;; cache channels==4
+    get_local $channels
+    i32.const 4
+    i32.eq
+    set_local $hasAlpha
+
     ;; calculate size
     i32.mul
     i32.mul
@@ -82,13 +83,13 @@
     i32.add
 
     ;; allocate data
-    i32.const 65536
-    i32.div_u
+    i32.const 16
+    i32.shr_u
     i32.const 1
     i32.add
     memory.grow
-    i32.const 65536
-    i32.mul
+    i32.const 16
+    i32.shl
     tee_local $index_offset
     i32.const 256
     i32.add
@@ -138,9 +139,9 @@
             set_local $a
         end
     else
-        ;; RUN
-        i32.const 192
+        ;; RUN (top two bits == 11)
         get_local $current
+        i32.const 192
         i32.and
         i32.const 192
         i32.eq
@@ -151,45 +152,38 @@
             set_local $run
         else
             ;; INDEX
-            i32.const 192
             get_local $current
+            i32.const 192
             i32.and
-            i32.const 0
-            i32.eq
+            i32.eqz
             if
                 get_local $current
-                i32.const 4
-                i32.mul
+                i32.const 2
+                i32.shl
                 set_local $pixelIndex
                 
-                get_local $pixelIndex
                 get_local $index_offset
+                get_local $pixelIndex
                 i32.add
                 i32.load8_u
                 set_local $r
 
-                get_local $pixelIndex
                 get_local $index_offset
+                get_local $pixelIndex
                 i32.add
-                i32.const 1
-                i32.add
-                i32.load8_u
+                i32.load8_u offset=1
                 set_local $g
 
-                get_local $pixelIndex
                 get_local $index_offset
+                get_local $pixelIndex
                 i32.add
-                i32.const 2
-                i32.add
-                i32.load8_u
+                i32.load8_u offset=2
                 set_local $b
 
-                get_local $pixelIndex
                 get_local $index_offset
+                get_local $pixelIndex
                 i32.add
-                i32.const 3
-                i32.add
-                i32.load8_u
+                i32.load8_u offset=3
                 set_local $a
             else
                 ;; DIFF
@@ -289,30 +283,24 @@
     i32.add
     i32.add
     i32.add
-    i32.const 64
-    i32.rem_u
-    i32.const 4
-    i32.mul
+    i32.const 63
+    i32.and
+    i32.const 2
+    i32.shl
     get_local $index_offset
     i32.add
     tee_local $newHash
     get_local $r
     i32.store8
     get_local $newHash
-    i32.const 1
-    i32.add
     get_local $g
-    i32.store8
+    i32.store8 offset=1
     get_local $newHash
-    i32.const 2
-    i32.add
     get_local $b
-    i32.store8
+    i32.store8 offset=2
     get_local $newHash
-    i32.const 3
-    i32.add
     get_local $a
-    i32.store8
+    i32.store8 offset=3
     end
     ;; Address
     get_local $pagesOffset
@@ -325,27 +313,19 @@
     i32.store8
 
     get_local $current
-    i32.const 1
-    i32.add
     get_local $g
-    i32.store8
+    i32.store8 offset=1
 
     get_local $current
-    i32.const 2
-    i32.add
     get_local $b
-    i32.store8
+    i32.store8 offset=2
 
-    i32.const 4
-    get_local $channels
-    i32.eq
+    get_local $hasAlpha
     if
     ;; alpha
     get_local $current
-    i32.const 3
-    i32.add
     get_local $a
-    i32.store8
+    i32.store8 offset=3
     end
 
     ;; loop until end of output pixels
@@ -354,7 +334,7 @@
     i32.add
     tee_local $loop_counter
     get_local $pixelsLength
-    i32.lt_s
+    i32.lt_u
     br_if $loop
     end
 

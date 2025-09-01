@@ -1,6 +1,6 @@
 # QOI WASM
 
-A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT). Current size of the library is _619_ bytes.
+A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT). Current size of the library is _564_ bytes.
 
 ## WAT
 
