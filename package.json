@@ -1,6 +1,6 @@
 {
   "name": "qoi-wasm",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A QOI decoder written in WebAssembly",
   "main": "./dist/index.js",
   "files": [
@@ -18,7 +18,7 @@
     "kombine": "node src/kombine/index.js",
     "kombine:opt": "WASM_OPT=1 node src/kombine/index.js",
     "serve": "node serve.mjs",
-  "build": "npm run compile && cp src/qoi-wasm/qoi.wasm src/qoi-wasm/qoi.min.wasm && node_modules/.bin/wasm-strip src/qoi-wasm/qoi.min.wasm && node scripts/prepare-package.js",
+    "build": "npm run compile && cp src/qoi-wasm/qoi.wasm src/qoi-wasm/qoi.min.wasm && node_modules/.bin/wasm-strip src/qoi-wasm/qoi.min.wasm && node scripts/prepare-package.js",
     "prepublishOnly": "npm run build",
     "changeset": "changeset",
     "release:version": "changeset version",
