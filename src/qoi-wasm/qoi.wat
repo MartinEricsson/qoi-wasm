@@ -28,7 +28,7 @@
     i32.or
     i32.or
   )
-  (func $decode (result i32 i32 i32 i32 i32)
+  (func $d (result i32 i32 i32 i32 i32)
     (local $r i32)
     (local $g i32)
     (local $b i32)
@@ -37,15 +37,13 @@
     (local $pixelsLength i32)
     (local $loop_counter i32)
     (local $index_offset i32)
-    (local $width i32) 
-    (local $height i32) 
-    (local $channels i32) 
+    (local $width i32)
+    (local $height i32)
+    (local $channels i32)
     (local $hasAlpha i32)
     (local $run i32)
     (local $current i32)
     (local $luma i32)
-    (local $newHash i32)
-    (local $pixelIndex i32)
 
     ;; verify magic number
     i32.const 0
@@ -53,7 +51,7 @@
     i32.const 1718185841
     i32.eq
     if
-    
+
     ;; parse width
     i32.const 4
     call $bigEndianParse
@@ -102,240 +100,231 @@
     ;; decoder loop
     loop $loop
 
-    ;; run > 0
-    local.get $run
-    i32.const 0
-    i32.gt_s
-    if
-    local.get $run
-    i32.const 1
-    i32.sub
-    local.set $run
-    else
+      ;; run > 0
+      local.get $run
+      if
+        local.get $run
+        i32.const 1
+        i32.sub
+        local.set $run
+      else
 
-    call $getAndInc
-    local.tee $current
-    
-    ;; RGB,A
-    i32.const 254
-    i32.ge_u
-    if
-        ;; r == data++
         call $getAndInc
-        local.set $r
-        ;; g == data++
-        call $getAndInc
-        local.set $g
-        ;; b == data++
-        call $getAndInc
-        local.set $b
+        local.tee $current
 
-        ;; alpha
-        i32.const 255
-        local.get $current
-        i32.eq
+        ;; RGB,A
+        i32.const 254
+        i32.ge_u
         if
+          ;; r == data++
+          call $getAndInc
+          local.set $r
+          ;; g == data++
+          call $getAndInc
+          local.set $g
+          ;; b == data++
+          call $getAndInc
+          local.set $b
+
+          ;; alpha
+          i32.const 255
+          local.get $current
+          i32.eq
+          if
             call $getAndInc
             local.set $a
-        end
-    else
-        ;; RUN (top two bits == 11)
-        local.get $current
-        i32.const 192
-        i32.and
-        i32.const 192
-        i32.eq
-        if
+          end
+        else
+          ;; RUN (top two bits == 11)
+          local.get $current
+          i32.const 192
+          i32.and
+          i32.const 192
+          i32.eq
+          if
             i32.const 63
             local.get $current
             i32.and
             local.set $run
-        else
+          else
             ;; INDEX
             local.get $current
             i32.const 192
             i32.and
             i32.eqz
             if
+              local.get $index_offset
+              local.get $current
+              i32.const 2
+              i32.shl
+              i32.add
+              local.tee $current
+              i32.load8_u
+              local.set $r
+
+              local.get $current
+              i32.load8_u offset=1
+              local.set $g
+
+              local.get $current
+              i32.load8_u offset=2
+              local.set $b
+
+              local.get $current
+              i32.load8_u offset=3
+              local.set $a
+            else
+              ;; DIFF
+              i32.const 192
+              local.get $current
+              i32.and
+              i32.const 64
+              i32.eq
+              if
                 local.get $current
+                i32.const 4
+                i32.shr_u
+                i32.const 3
+                i32.and
                 i32.const 2
-                i32.shl
-                local.set $pixelIndex
-                
-                local.get $index_offset
-                local.get $pixelIndex
+                i32.sub
+                local.get $r
                 i32.add
-                i32.load8_u
                 local.set $r
 
-                local.get $index_offset
-                local.get $pixelIndex
+                local.get $current
+                i32.const 2
+                i32.shr_u
+                i32.const 3
+                i32.and
+                i32.const 2
+                i32.sub
+                local.get $g
                 i32.add
-                i32.load8_u offset=1
                 local.set $g
 
-                local.get $index_offset
-                local.get $pixelIndex
-                i32.add
-                i32.load8_u offset=2
-                local.set $b
-
-                local.get $index_offset
-                local.get $pixelIndex
-                i32.add
-                i32.load8_u offset=3
-                local.set $a
-            else
-                ;; DIFF
-                i32.const 192
                 local.get $current
+                i32.const 3
                 i32.and
-                i32.const 64
-                i32.eq
-                if
-                    local.get $current
-                    i32.const 4
-                    i32.shr_u
-                    i32.const 3
-                    i32.and
-                    i32.const 2
-                    i32.sub
-                    local.get $r
-                    i32.add
-                    local.set $r
+                i32.const 2
+                i32.sub
+                local.get $b
+                i32.add
+                local.set $b
+              else
+                ;; LUMA
+                local.get $current
+                call $getAndInc
+                local.set $current
 
-                    local.get $current
-                    i32.const 2
-                    i32.shr_u
-                    i32.const 3
-                    i32.and
-                    i32.const 2
-                    i32.sub
-                    local.get $g
-                    i32.add
-                    local.set $g
+                i32.const 63
+                i32.and
+                i32.const 32
+                i32.sub
+                local.tee $luma
 
-                    local.get $current
-                    i32.const 3
-                    i32.and
-                    i32.const 2
-                    i32.sub
-                    local.get $b
-                    i32.add
-                    local.set $b
-                else
-                    ;; LUMA
-                    local.get $current
-                    call $getAndInc
-                    local.set $current
+                local.get $g
+                i32.add
+                local.set $g
 
-                    i32.const 63
-                    i32.and
-                    i32.const 32
-                    i32.sub
-                    local.tee $luma
+                local.get $current
+                i32.const 4
+                i32.shr_u
+                i32.const 15
+                i32.and
+                local.get $luma
+                i32.const 8
+                i32.sub
+                i32.add
+                local.get $r
+                i32.add
+                local.set $r
 
-                    local.get $g
-                    i32.add
-                    local.set $g
-
-                    local.get $current
-                    i32.const 4
-                    i32.shr_u
-                    i32.const 15
-                    i32.and
-                    local.get $luma
-                    i32.const 8
-                    i32.sub
-                    i32.add
-                    local.get $r
-                    i32.add
-                    local.set $r
-
-                    local.get $current
-                    i32.const 15
-                    i32.and
-                    local.get $luma
-                    i32.const 8
-                    i32.sub
-                    i32.add
-                    local.get $b
-                    i32.add
-                    local.set $b
-                end
+                local.get $current
+                i32.const 15
+                i32.and
+                local.get $luma
+                i32.const 8
+                i32.sub
+                i32.add
+                local.get $b
+                i32.add
+                local.set $b
+              end
             end
+          end
         end
-    end
-    
-    ;; HASH
-    local.get $r
-    i32.const 3
-    i32.mul
-    local.get $g
-    i32.const 5
-    i32.mul
-    local.get $b
-    i32.const 7
-    i32.mul
-    local.get $a
-    i32.const 11
-    i32.mul
-    i32.add
-    i32.add
-    i32.add
-    i32.const 63
-    i32.and
-    i32.const 2
-    i32.shl
-    local.get $index_offset
-    i32.add
-    local.tee $newHash
-    local.get $r
-    i32.store8
-    local.get $newHash
-    local.get $g
-    i32.store8 offset=1
-    local.get $newHash
-    local.get $b
-    i32.store8 offset=2
-    local.get $newHash
-    local.get $a
-    i32.store8 offset=3
-    end
-    ;; Address
-    local.get $pagesOffset
-    local.get $loop_counter
-    i32.add
-    local.tee $current
-    ;; value
-    local.get $r
-    ;; store
-    i32.store8
+      end
 
-    local.get $current
-    local.get $g
-    i32.store8 offset=1
+      ;; HASH
+      local.get $r
+      i32.const 3
+      i32.mul
+      local.get $g
+      i32.const 5
+      i32.mul
+      local.get $b
+      i32.const 7
+      i32.mul
+      local.get $a
+      i32.const 11
+      i32.mul
+      i32.add
+      i32.add
+      i32.add
+      i32.const 63
+      i32.and
+      i32.const 2
+      i32.shl
+      local.get $index_offset
+      i32.add
+      local.tee $current
+      local.get $r
+      i32.store8
+      local.get $current
+      local.get $g
+      i32.store8 offset=1
+      local.get $current
+      local.get $b
+      i32.store8 offset=2
+      local.get $current
+      local.get $a
+      i32.store8 offset=3
 
-    local.get $current
-    local.get $b
-    i32.store8 offset=2
+      ;; Address
+      local.get $pagesOffset
+      local.get $loop_counter
+      i32.add
+      local.tee $current
+      ;; value
+      local.get $r
+      ;; store
+      i32.store8
 
-    local.get $hasAlpha
-    if
-    ;; alpha
+      local.get $current
+      local.get $g
+      i32.store8 offset=1
+
+      local.get $current
+      local.get $b
+      i32.store8 offset=2
+
+      local.get $hasAlpha
+      if
+        ;; alpha
         local.get $current
         local.get $a
-    i32.store8 offset=3
-    end
+        i32.store8 offset=3
+      end
 
-    ;; loop until end of output pixels
-    local.get $channels
-    local.get $loop_counter
-    i32.add
-    local.tee $loop_counter
-    local.get $pixelsLength
-    i32.lt_u
-    br_if $loop
+      ;; loop until end of output pixels
+      local.get $channels
+      local.get $loop_counter
+      i32.add
+      local.tee $loop_counter
+      local.get $pixelsLength
+      i32.lt_u
+      br_if $loop
     end
 
     end
@@ -347,5 +336,5 @@
     i32.load8_u
     local.get $pagesOffset
   )
-  (export "decode" (func $decode))
+  (export "d" (func $d))
 )

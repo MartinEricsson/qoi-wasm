@@ -1,6 +1,6 @@
 # QOI WASM
 
-A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT). Current size of the library is _564_ bytes.
+A [QOI](https://qoiformat.org) decoder written in the WebAssembly Text Format (WAT). Current size of the library is _549_ bytes.
 
 ## WAT
 
@@ -8,10 +8,10 @@ An implemention of the QOI decoder. This implementation is dependent on that the
 
 ### Usage
 
-The wasm module assumes that the QOI data, including the header, is stored at memory index 0 before decompression. To decompress the data call the decode method, e.g.,
+The wasm module assumes that the QOI data, including the header, is stored at memory index 0 before decompression. To decompress the data call the `d` method, e.g.,
 
 ```
-const header = wasm.instance.exports.decode();
+const header = wasm.instance.exports.d();
 const [width, height, channels, colorspace, memoryOffset] = header;
 ```
 

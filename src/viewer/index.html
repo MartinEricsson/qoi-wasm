@@ -75,7 +75,7 @@
               importObject
             );
             const decodeStart = performance.now();
-            const header = obj.instance.exports.decode();
+            const header = obj.instance.exports.d();
             const decodeMs = performance.now() - decodeStart;
             const [width, height, channels, colorspace, memoryOffset] = header;
             memOffset = memoryOffset;
