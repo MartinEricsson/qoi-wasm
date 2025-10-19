@@ -81,6 +81,8 @@ testcard                18371       21857       22295       7360
 wikipedia_008           1344960     1521134     1521571     1225351
 ```
 
+![File size comparison chart](./assets/file-size-comparison.svg)
+
 First two images are included in this repository, the rest comes from the official QOI page.
 
 ## Dependencies
