@@ -1,0 +1,176 @@
+<svg width="1200" height="1000" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="1200" height="1000" fill="#ffffff"/>
+  
+  <!-- Main Title -->
+  <text x="600" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">
+    QOI Format File Size Comparison
+  </text>
+  <!-- Main Title -->
+  <text x="600" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">
+    QOI Format File Size Comparison
+  </text>
+  
+  <!-- Legend -->
+  <g transform="translate(400, 50)">
+    <rect x="0" y="0" width="15" height="15" fill="#3b82f6"/>
+    <text x="20" y="12" font-family="Arial, sans-serif" font-size="12" fill="#333">PNG</text>
+    
+    <rect x="80" y="0" width="15" height="15" fill="#10b981"/>
+    <text x="100" y="12" font-family="Arial, sans-serif" font-size="12" fill="#333">QOI</text>
+    
+    <rect x="160" y="0" width="15" height="15" fill="#f59e0b"/>
+    <text x="180" y="12" font-family="Arial, sans-serif" font-size="12" fill="#333">QOI-WASM</text>
+    
+    <rect x="280" y="0" width="15" height="15" fill="#ef4444"/>
+    <text x="300" y="12" font-family="Arial, sans-serif" font-size="12" fill="#333">QOI-WASM-BROTLI</text>
+  </g>
+  
+  <!-- ========== GRAPH 1: Large Files ========== -->
+  <text x="600" y="110" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#555">
+    Large Files (300KB+)
+  </text>
+  
+  <!-- Y-axis label -->
+  <text x="20" y="300" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666" transform="rotate(-90, 20, 300)">
+    File Size (bytes)
+  </text>
+  
+  <!-- Y-axis scale lines and labels for large files -->
+  <line x1="60" y1="130" x2="60" y2="430" stroke="#ccc" stroke-width="2"/>
+  <line x1="60" y1="430" x2="1150" y2="430" stroke="#ccc" stroke-width="2"/>
+  
+  <!-- Y-axis ticks for large files (max ~1.75M) -->
+  <text x="50" y="435" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">0</text>
+  <line x1="55" y1="430" x2="60" y2="430" stroke="#666" stroke-width="1"/>
+  
+  <text x="50" y="385" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">500k</text>
+  <line x1="55" y1="380" x2="1150" y2="380" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="285" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">1M</text>
+  <line x1="55" y1="280" x2="1150" y2="280" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="185" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">1.5M</text>
+  <line x1="55" y1="180" x2="1150" y2="180" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="135" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">1.75M</text>
+  <line x1="55" y1="130" x2="1150" y2="130" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <!-- Large files data (scale: 300px = 1.75M) -->
+  <!-- peerfeer_frame_rgba: PNG=1684359, QOI=1747735, QOI-WASM=1748180, QOI-WASM-BROTLI=1019378 -->
+  <g transform="translate(150, 0)">
+    <rect x="0" y="141.6" width="20" height="288.4" fill="#3b82f6"/>
+    <rect x="25" y="130.1" width="20" height="299.9" fill="#10b981"/>
+    <rect x="50" y="130" width="20" height="300" fill="#f59e0b"/>
+    <rect x="75" y="255.3" width="20" height="174.7" fill="#ef4444"/>
+    <text x="47" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 445)">peerfeer_frame_rgba</text>
+  </g>
+  
+  <!-- dice: PNG=349827, QOI=519653, QOI-WASM=520096, QOI-WASM-BROTLI=318018 -->
+  <g transform="translate(350, 0)">
+    <rect x="0" y="370.0" width="20" height="60.0" fill="#3b82f6"/>
+    <rect x="25" y="341.0" width="20" height="89.0" fill="#10b981"/>
+    <rect x="50" y="340.9" width="20" height="89.1" fill="#f59e0b"/>
+    <rect x="75" y="375.4" width="20" height="54.6" fill="#ef4444"/>
+    <text x="47" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 445)">dice</text>
+  </g>
+  
+  <!-- kodim10: PNG=593463, QOI=652383, QOI-WASM=652820, QOI-WASM-BROTLI=499621 -->
+  <g transform="translate(520, 0)">
+    <rect x="0" y="328.1" width="20" height="101.9" fill="#3b82f6"/>
+    <rect x="25" y="317.9" width="20" height="112.1" fill="#10b981"/>
+    <rect x="50" y="317.9" width="20" height="112.1" fill="#f59e0b"/>
+    <rect x="75" y="344.2" width="20" height="85.8" fill="#ef4444"/>
+    <text x="47" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 445)">kodim10</text>
+  </g>
+  
+  <!-- kodim23: PNG=557596, QOI=675251, QOI-WASM=675688, QOI-WASM-BROTLI=512840 -->
+  <g transform="translate(690, 0)">
+    <rect x="0" y="334.3" width="20" height="95.7" fill="#3b82f6"/>
+    <rect x="25" y="314.0" width="20" height="116.0" fill="#10b981"/>
+    <rect x="50" y="313.9" width="20" height="116.1" fill="#f59e0b"/>
+    <rect x="75" y="342.1" width="20" height="87.9" fill="#ef4444"/>
+    <text x="47" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 445)">kodim23</text>
+  </g>
+  
+  <!-- wikipedia_008: PNG=1344960, QOI=1521134, QOI-WASM=1521571, QOI-WASM-BROTLI=1225351 -->
+  <g transform="translate(860, 0)">
+    <rect x="0" y="198.9" width="20" height="231.1" fill="#3b82f6"/>
+    <rect x="25" y="168.7" width="20" height="261.3" fill="#10b981"/>
+    <rect x="50" y="168.6" width="20" height="261.4" fill="#f59e0b"/>
+    <rect x="75" y="219.9" width="20" height="210.1" fill="#ef4444"/>
+    <text x="47" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 445)">wikipedia_008</text>
+  </g>
+  
+  <!-- ========== GRAPH 2: Small Files ========== -->
+  <text x="600" y="540" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#555">
+    Small Files (&lt;30KB)
+  </text>
+  
+  <!-- Y-axis label -->
+  <text x="20" y="730" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666" transform="rotate(-90, 20, 730)">
+    File Size (bytes)
+  </text>
+  
+  <!-- Y-axis scale lines and labels for small files -->
+  <line x1="60" y1="560" x2="60" y2="860" stroke="#ccc" stroke-width="2"/>
+  <line x1="60" y1="860" x2="1150" y2="860" stroke="#ccc" stroke-width="2"/>
+  
+  <!-- Y-axis ticks for small files (max 30k) -->
+  <text x="50" y="865" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">0</text>
+  <line x1="55" y1="860" x2="60" y2="860" stroke="#666" stroke-width="1"/>
+  
+  <text x="50" y="790" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">10k</text>
+  <line x1="55" y1="785" x2="1150" y2="785" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="715" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">20k</text>
+  <line x1="55" y1="710" x2="1150" y2="710" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="640" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">27k</text>
+  <line x1="55" y1="635" x2="1150" y2="635" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <text x="50" y="565" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#666">30k</text>
+  <line x1="55" y1="560" x2="1150" y2="560" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <!-- Small files data (scale: 300px = 30k bytes, 10px per 1k) -->
+  <!-- pixil-frame-0: PNG=124, QOI=104, QOI-WASM=530, QOI-WASM-BROTLI=308 -->
+  <g transform="translate(120, 0)">
+    <rect x="0" y="858.8" width="20" height="1.2" fill="#3b82f6"/>
+    <rect x="25" y="859.0" width="20" height="1.0" fill="#10b981"/>
+    <rect x="50" y="854.7" width="20" height="5.3" fill="#f59e0b"/>
+    <rect x="75" y="856.9" width="20" height="3.1" fill="#ef4444"/>
+    <text x="47" y="875" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 875)">pixil-frame-0</text>
+  </g>
+  
+  <!-- qoi_logo: PNG=16605, QOI=16488, QOI-WASM=16925, QOI-WASM-BROTLI=7968 -->
+  <g transform="translate(310, 0)">
+    <rect x="0" y="693.9" width="20" height="166.1" fill="#3b82f6"/>
+    <rect x="25" y="695.1" width="20" height="164.9" fill="#10b981"/>
+    <rect x="50" y="690.8" width="20" height="169.2" fill="#f59e0b"/>
+    <rect x="75" y="780.3" width="20" height="79.7" fill="#ef4444"/>
+    <text x="47" y="875" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 875)">qoi_logo</text>
+  </g>
+  
+  <!-- testcard_rgba: PNG=14227, QOI=24167, QOI-WASM=24605, QOI-WASM-BROTLI=9133 -->
+  <g transform="translate(500, 0)">
+    <rect x="0" y="717.7" width="20" height="142.3" fill="#3b82f6"/>
+    <rect x="25" y="617.3" width="20" height="242.7" fill="#10b981"/>
+    <rect x="50" y="613.9" width="20" height="246.1" fill="#f59e0b"/>
+    <rect x="75" y="768.7" width="20" height="91.3" fill="#ef4444"/>
+    <text x="47" y="875" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 875)">testcard_rgba</text>
+  </g>
+  
+  <!-- testcard: PNG=18371, QOI=21857, QOI-WASM=22295, QOI-WASM-BROTLI=7360 -->
+  <g transform="translate(690, 0)">
+    <rect x="0" y="676.3" width="20" height="183.7" fill="#3b82f6"/>
+    <rect x="25" y="641.4" width="20" height="218.6" fill="#10b981"/>
+    <rect x="50" y="637.1" width="20" height="222.9" fill="#f59e0b"/>
+    <rect x="75" y="786.4" width="20" height="73.6" fill="#ef4444"/>
+    <text x="47" y="875" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-45, 47, 875)">testcard</text>
+  </g>
+  
+  <!-- Footer note -->
+  <text x="600" y="970" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+    File sizes in bytes - Lower is better
+  </text>
+</svg>

@@ -131,3 +131,10 @@ dist
 
 # OSX
 .DS_Store
+
+# Ignore generated asset files (keep source .qoi files tracked)
+assets/dice*
+assets/kodim*
+assets/qoi_logo*
+assets/testcard*
+assets/wikipedia*
